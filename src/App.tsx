@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -18,10 +18,10 @@ import {
   Cpu,
   Orbit
 } from 'lucide-react';
-import GameContainer from './game/GameContainer';
+const GameContainer = lazy(() => import('./game/GameContainer'));
 import { useUser } from './hooks/useUser';
 import { useAccount } from 'wagmi';
-import Leaderboard from './components/Leaderboard';
+const Leaderboard = lazy(() => import('./components/Leaderboard'));
 import { submitScore } from './services/leaderboardService';
 import FuturisticBackground from './components/FuturisticBackground';
 import ConcreteText from './components/ConcreteText';
@@ -321,10 +321,12 @@ export default function App() {
                   </button>
                 </div>
                 <div className="aspect-square w-full max-w-2xl mx-auto">
-                  <GameContainer 
-                    difficulty={difficulty} 
-                    onComplete={handleGameComplete} 
-                  />
+                  <Suspense fallback={<div className="flex h-full items-center justify-center text-gray-400">Loading Arena...</div>}>
+                    <GameContainer 
+                      difficulty={difficulty} 
+                      onComplete={handleGameComplete} 
+                    />
+                  </Suspense>
                 </div>
               </div>
             </motion.section>
@@ -357,7 +359,9 @@ export default function App() {
                 </div>
               </div>
 
-              <Leaderboard />
+              <Suspense fallback={<div className="text-center py-24 text-gray-400">Loading Leaderboard...</div>}>
+                <Leaderboard />
+              </Suspense>
             </motion.section>
           )}
 

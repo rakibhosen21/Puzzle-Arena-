@@ -15,6 +15,32 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      chunkSizeWarningLimit: 5000,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id) return undefined;
+            if (id.includes('node_modules')) {
+              if (id.includes('@rainbow-me') || id.includes('wagmi') || id.includes('@walletconnect') || id.includes('@coinbase') || id.includes('@reown') || id.includes('ethers') || id.includes('viem')) {
+                return 'wallet';
+              }
+              if (id.includes('firebase')) {
+                return 'firebase';
+              }
+              if (id.includes('phaser')) {
+                return 'phaser';
+              }
+              if (id.includes('motion') || id.includes('lucide-react')) {
+                return 'ui';
+              }
+              return 'vendor';
+            }
+            return undefined;
+          }
+        }
+      }
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

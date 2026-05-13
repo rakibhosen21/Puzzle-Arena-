@@ -51,10 +51,10 @@ const ConcreteText: React.FC = () => {
         <motion.span
           animate={{
             backgroundImage: [
-              'linear-gradient(90deg, #eaal08, #fbbf24, #f59e0b, #eaal08)',
-              'linear-gradient(180deg, #f59e0b, #eaal08, #fbbf24, #f59e0b)',
-              'linear-gradient(270deg, #fbbf24, #f59e0b, #eaal08, #fbbf24)',
-              'linear-gradient(0deg, #eaal08, #fbbf24, #f59e0b, #eaal08)',
+              'linear-gradient(90deg, #eab308, #fbbf24, #f59e0b, #eab308)',
+              'linear-gradient(180deg, #f59e0b, #eab308, #fbbf24, #f59e0b)',
+              'linear-gradient(270deg, #fbbf24, #f59e0b, #eab308, #fbbf24)',
+              'linear-gradient(0deg, #eab308, #fbbf24, #f59e0b, #eab308)',
             ],
             textShadow: [
               '0 0 15px rgba(234, 179, 8, 0.6)',

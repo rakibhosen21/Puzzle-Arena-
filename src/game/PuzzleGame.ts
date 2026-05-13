@@ -144,7 +144,7 @@ export class PuzzleGame extends Phaser.Scene {
 
       if (instant) {
         tile.setPosition(newX, newY);
-        if ((tile as any).glow) (tile as any).glow.setPosition(newX - tile.x, newY - tile.y);
+        if ((tile as any).glow) (tile as any).glow.setPosition(newX, newY);
       } else {
         this.tweens.add({
           targets: [tile, (tile as any).glow],
