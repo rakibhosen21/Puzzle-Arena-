@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // --- User Profiles ---
+    match /users/{userId} {
+      allow get: if true; // Publicly readable by ID? Or restrict? 
+      // For GameFi, usually profiles are semi-public or restricted
+      
+      function isValidUser(data) {
+        return data.keys().hasAll(['walletAddress', 'xp', 'points', 'streak', 'level', 'puzzlesSolved', 'lastLogin'])
+          && data.keys().size() == 7
+          && data.walletAddress is string
+          && data.xp is int
+          && data.points is int
+          && data.streak is int
+          && data.level is int
+          && data.puzzlesSolved is int
+          && data.lastLogin is string;
+      }
+
+      allow create: if isValidId(userId) && userId == incoming().walletAddress && isValidUser(incoming());
+      
+      allow update: if isValidUser(incoming())
+        && incoming().walletAddress == existing().walletAddress
+        && (
+          // Allow XP/Points increment
+          incoming().diff(existing()).affectedKeys().hasOnly(['xp', 'points', 'puzzlesSolved', 'level', 'lastLogin'])
+          || incoming().diff(existing()).affectedKeys().hasOnly(['streak', 'lastLogin'])
+        );
+    }
+
+    // --- Leaderboard ---
+    match /leaderboard/{scoreId} {
+      allow list: if true; 
+      allow get: if true;
+      
+      function isValidScore(data) {
+        return data.keys().hasAll(['walletAddress', 'score', 'difficulty', 'timestamp'])
+          && data.keys().size() == 4
+          && data.walletAddress is string
+          && data.score is int
+          && data.difficulty in ['easy', 'medium', 'hard']
+          && data.timestamp is string;
+      }
+
+      allow create: if isValidId(scoreId) && isValidScore(incoming());
+    }
+  }
+}

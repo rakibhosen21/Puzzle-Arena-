@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user progress, currency, and stats.",
+      "type": "object",
+      "properties": {
+        "walletAddress": { "type": "string", "description": "Primary key / Wallet address" },
+        "xp": { "type": "integer", "description": "Experience points" },
+        "points": { "type": "integer", "description": "Protocol points (cPoints)" },
+        "streak": { "type": "integer", "description": "Daily login streak" },
+        "level": { "type": "integer", "description": "User level" },
+        "puzzlesSolved": { "type": "integer", "description": "Total puzzles solved" },
+        "lastLogin": { "type": "string", "format": "date-time", "description": "ISO timestamp of last login" }
+      },
+      "required": ["walletAddress", "xp", "points", "streak", "level", "puzzlesSolved", "lastLogin"]
+    },
+    "Score": {
+      "title": "Leaderboard Entry",
+      "description": "A single puzzle completion record.",
+      "type": "object",
+      "properties": {
+        "walletAddress": { "type": "string" },
+        "score": { "type": "integer" },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["walletAddress", "score", "difficulty", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles indexed by wallet address."
+    },
+    "/leaderboard/{scoreId}": {
+      "schema": "Score",
+      "description": "Global leaderboard entries."
+    }
+  }
+}
